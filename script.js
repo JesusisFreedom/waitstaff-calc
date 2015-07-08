@@ -2,19 +2,56 @@
  * Created by austinadams on 7/7/15.
  */
 
-angular.module('waitStaffCalc', ['ngMessages'])
-  .controller('FormCtrl', ['$scope', function ($scope) {
+angular.module('waitStaffCalc', ['ngRoute'])
+  .config(['$routeProvider', function ($routeProvider) {
+    $routeProvider
+      .when("/", {
+        templateUrl: 'home.html'
+      })
+      .when("/new-meal", {
+        templateUrl: 'new-meal.html',
+        controller: "FormCtrl"
+      })
+      .when("/my-earnings", {
+        templateUrl: 'my-earnings.html',
+        controller: "EarningsCtrl"
+      })
+      .otherwise("/");
+  }])
+  .value('priceData', {
+    meals: [],
+    totalMeals: function () {
+      return this.meals.length;
+    },
+    totalTips: function () {
+      var meals = this.meals,
+        totals = 0;
+      meals.map(function (v, i) {
+        totals += v.tip;
+      });
+      return totals;
+    },
+    avgTips: function () {
+      var meals = this.meals,
+        totals = 0;
+      meals.map(function (v, i) {
+        totals += v.tip;
+      });
+      return meals.length > 0 ? totals / meals.length : 0.00;
+    }
+  })
+  .value('currentMeal', {})
+  .value('mealPriceTemplate', {
+    subtotal: 0.00,
+    tip: 0.00,
+    total: 0.00
+  })
+  .controller('FormCtrl', ['$scope', 'priceData', 'currentMeal', 'mealPriceTemplate', function ($scope, priceData, currentMeal, mealPriceTemplate) {
     //Decimal Validation Pattern
     $scope.decimalPat = /^\d+(\.\d+)?$/;
     //Initial Error Class State
     $scope.fieldError = 'has-nothing';
-    //Price Object Model
-    var mealPriceTemplate = {
-      subtotal: 0.00,
-      tip: 0.00,
-      total: 0.00
-    };
-    $scope.resetForm = function(){
+    $scope.resetForm = function () {
       $scope.mealPrice = "0.00";
       $scope.tip = "0.00";
       $scope.tax = "0.00";
@@ -29,39 +66,17 @@ angular.module('waitStaffCalc', ['ngMessages'])
           meal = parseFloat($scope.mealPrice),
           tip = parseFloat($scope.tip);
         //Reset Current Meal
-        $scope.currentMeal = Object.create(mealPriceTemplate);
-        $scope.currentMeal.subtotal = ($scope.mealPrice * (tax / 100)) + meal;
-        $scope.currentMeal.tip = ($scope.mealPrice * (tip / 100));
-        $scope.currentMeal.total = $scope.currentMeal.subtotal + $scope.currentMeal.tip;
-        $scope.priceData.meals.push($scope.currentMeal);
+        currentMeal = Object.create(mealPriceTemplate);
+        currentMeal.subtotal = ($scope.mealPrice * (tax / 100)) + meal;
+        currentMeal.tip = ($scope.mealPrice * (tip / 100));
+        currentMeal.total = currentMeal.subtotal + currentMeal.tip;
+        priceData.meals.push(currentMeal);
         $scope.resetForm();
       }
     };
-
     $scope.currentMeal = Object.create(mealPriceTemplate);
-
-    $scope.priceData = {
-      meals: [],
-      totalMeals: function () {
-        return this.meals.length;
-      },
-      totalTips: function () {
-        var meals = this.meals,
-          totals = 0;
-        meals.map(function (v, i) {
-          totals += v.tip;
-        });
-        return totals;
-      },
-      avgTips: function () {
-        var meals = this.meals,
-          totals = 0;
-        meals.map(function (v, i) {
-          totals += v.tip;
-        });
-        return meals.length > 0 ? totals / meals.length : 0.00;
-      }
-    };
-
   }])
-;
+  .controller('EarningsCtrl', ['$scope', 'priceData', 'currentMeal', function ($scope, priceData, currentMeal) {
+    $scope.currentMeal = currentMeal;
+    $scope.priceData = priceData;
+  }]);

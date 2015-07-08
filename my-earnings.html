@@ -1,0 +1,20 @@
+<div class="row">
+  <div class="col-md-4 col-md-push-4">
+    <div class="panel panel-default">
+      <div class="panel-heading">Customer Charges</div>
+      <div class="panel-body text-right">
+        <div class="subtotal">Subtotal: {{currentMeal.subtotal | currency:"$"}}</div>
+        <div class="tip">Tip: {{currentMeal.tip | currency:"$"}}</div>
+        <div class="total">Total: {{currentMeal.total | currency:"$"}}</div>
+      </div>
+    </div>
+    <div class="panel panel-default ">
+      <div class="panel-heading">My Earnings Info</div>
+      <div class="panel-body text-right">
+        <div class="subtotal">Total Tips: {{priceData.totalTips() | currency:"$"}}</div>
+        <div class="total-meals">Total Meals: {{priceData.totalMeals()}}</div>
+        <div class="total">Average Tip: {{priceData.avgTips() | currency:"$"}}</div>
+      </div>
+    </div>
+  </div>
+</div>
