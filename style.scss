@@ -1,0 +1,23 @@
+.view-wrapper{
+  position: relative;
+  perspective: 900px;
+  .animate-view{
+    position: absolute;
+    top:0;
+    left:0;
+    width:100%;
+    transition: all .3s ease-out;
+    &.ng-enter-active {
+      opacity: 1;
+      left: 0px;
+    }
+    &.ng-enter {
+      opacity: 0;
+      left: -100px;
+    }
+    &.ng-leave-active{
+      opacity: 0;
+      left: 100px;
+    }
+  }
+}

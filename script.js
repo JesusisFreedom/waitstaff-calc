@@ -2,7 +2,7 @@
  * Created by austinadams on 7/7/15.
  */
 
-angular.module('waitStaffCalc', ['ngRoute'])
+angular.module('waitStaffCalc', ['ngRoute', 'ngAnimate'])
   .config(['$routeProvider', function ($routeProvider) {
     $routeProvider
       .when("/", {
